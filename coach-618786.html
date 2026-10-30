@@ -28,6 +28,7 @@ input[type=password],input[type=text]{border:2px solid var(--line);background:va
 .msg{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:8px}
 .msg b{font-family:var(--disp);font-size:18px;text-transform:uppercase}.msg small{color:var(--mute)}
 .lg{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--mute);margin-top:10px}.lg i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px}
+.flag.wb{border-color:var(--accent);color:var(--accent)}
 .err{margin-top:12px;background:#F6E9E7;color:#7A1F1F;border-radius:10px;padding:10px 12px;font-size:14px}
 </style>
 <div class="w">
@@ -60,7 +61,8 @@ function render(j){const ti=todayIdx(),map={};
   for(let i=0;i<=Math.min(27,ti);i++){cnt++;const r=m[i];const p=r&&r.b?Math.round(100*r.a/r.b):0;sum+=p;if(r&&r.a>0){act++;const u=new Date(r.u);if(!last||u>last)last=u}}
   const avg=cnt?Math.round(sum/cnt):0;
   const quiet=ti>=2&&(!last||(Date.now()-last)>2*864e5+864e5/2);
-  return {n,m,avg,last,act,cnt,quiet}});
+  let back=false;for(let i=Math.max(0,ti-3);i<=Math.min(27,ti);i++){const r=m[i];if(r&&String(r.s).indexOf('Welcome back')>=0)back=true}
+  return {n,m,avg,last,act,cnt,quiet,back}});
  rows.sort((a,b)=>(b.quiet-a.quiet)||(a.avg-b.avg));
  $('sub').textContent=ti<0?'Training starts Nov 2':(ti>27?'Block finished':'Day '+(ti+1)+' of 28')+' · % = share of check-offs done so far';
  $('pls').innerHTML=rows.map(R=>{let cells='';
@@ -70,7 +72,7 @@ function render(j){const ti=todayIdx(),map={};
    det+='<tr><td><b>'+dlab(i)+'</b></td><td>'+(r.b?Math.round(100*r.a/r.b):0)+'%</td><td>'+s.map(x=>esc(x[0])+(x[2]>1?' '+x[1]+'/'+x[2]:(x[1]?' ✓':' ✗'))).join(' · ')+'</td></tr>'}
   det+='</table>';if(det==='<table></table>')det='<div class="sub">Nothing logged yet.</div>';
   const last=R.last?R.last.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}):'never';
-  return '<div class="pl"><button class="ph" type="button"><span class="nm">'+esc(R.n)+'</span><span class="pct">'+R.avg+'%</span><span class="meta">'+R.act+'/'+Math.max(R.cnt,0)+' days · last '+last+'</span>'+(R.quiet?'<span class="flag">Quiet</span>':'')+'</button><div class="str">'+cells+'</div><div class="dt">'+det+'</div></div>'}).join('');
+  return '<div class="pl"><button class="ph" type="button"><span class="nm">'+esc(R.n)+'</span><span class="pct">'+R.avg+'%</span><span class="meta">'+R.act+'/'+Math.max(R.cnt,0)+' days · last '+last+'</span>'+(R.quiet?'<span class="flag">Quiet</span>':(R.back?'<span class="flag wb">Welcome back</span>':''))+'</button><div class="str">'+cells+'</div><div class="dt">'+det+'</div></div>'}).join('');
  document.querySelectorAll('.ph').forEach(b=>b.onclick=()=>b.parentNode.classList.toggle('open'));
  const ms=j.msgs.slice().sort((a,b)=>new Date(b.u)-new Date(a.u));
  $('msgs').innerHTML=ms.length?ms.map(m=>'<div class="msg"><b>'+esc(m.p)+'</b> <small>'+dlab(m.d)+'</small><div>'+esc(m.m)+'</div></div>').join(''):'<div class="sub">No messages yet.</div>'}

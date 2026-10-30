@@ -41,7 +41,7 @@ input[type=password],input[type=text]{border:2px solid var(--line);background:va
 <h2>Messages from players</h2><div id="msgs"></div>
 </div><div id="er"></div></div>
 <script>
-const TRK='https://script.google.com/macros/s/AKfycbxXeLEhwPotT8eOVEqR0f1wn8rnzLXBZMJn1a8shfHNbgLCB66rgWr8D0Oinykyn_YT/exec',PLAYERS=["Prebot", "Lopez", "Cook", "Araujo", "Munger", "DeLuca", "Vermette", "Robitialle", "Gallagher", "Jones", "Vinas", "Rosario"],SDAY=new Date(2026,10,2);
+const TRK='https://script.google.com/macros/s/AKfycbxXeLEhwPotT8eOVEqR0f1wn8rnzLXBZMJn1a8shfHNbgLCB66rgWr8D0Oinykyn_YT/exec',PLAYERS=["Prebot", "Lopez", "Cook", "Araujo", "Munger",  "Vermette", "Robitialle", "Gallagher", "Jones", "Vinas", "Rosario"],SDAY=new Date(2026,10,2);
 const $=id=>document.getElementById(id);
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}

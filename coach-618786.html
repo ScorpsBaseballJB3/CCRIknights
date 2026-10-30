@@ -1,0 +1,82 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>html,body{margin:0}*,*::before,*::after{box-sizing:border-box}body{-webkit-text-size-adjust:100%}</style><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="icon-192.png"><link rel="manifest" href="manifest.json"><meta name="apple-mobile-web-app-title" content="CCRI"><meta name="robots" content="noindex,nofollow"><title>Coach Board</title>
+<style>
+:root{--bg:#F3F4EF;--card:#fff;--ink:#14201A;--mute:#5A665F;--line:#D5DAD2;--accent:#0B5D3B;--gold:#E9B93A;--soft:#E8ECE5;--bad:#B5452F;--none:#C9CFC6;--disp:'Barlow Condensed','Arial Narrow',Arial,sans-serif;--body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#0F1512;--card:#18211C;--ink:#EDF2EC;--mute:#A3B0A7;--line:#2C3A32;--accent:#4CC38E;--gold:#E9B93A;--soft:#1F2B24;--bad:#D9654C;--none:#33403A;color-scheme:dark}}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);margin:0;-webkit-text-size-adjust:100%}
+.w{max-width:760px;margin:0 auto;padding:14px 16px 40px}
+h1{font-family:var(--disp);font-weight:800;font-size:34px;text-transform:uppercase;margin:6px 0 2px}
+h2{font-family:var(--disp);font-weight:800;font-size:22px;text-transform:uppercase;margin:22px 0 8px}
+.sub{color:var(--mute);font-size:14px}
+.bar{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
+button,input{font:inherit}
+.btn{border:2px solid var(--ink);background:var(--ink);color:var(--bg);border-radius:10px;padding:9px 14px;font-weight:700;cursor:pointer}
+.btn.o{background:none;color:var(--ink)}
+input[type=password],input[type=text]{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:10px;font-size:16px;width:220px}
+.pl{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-top:10px;overflow:hidden}
+.ph{display:flex;align-items:center;gap:10px;padding:11px 12px;cursor:pointer;width:100%;background:none;border:0;color:inherit;text-align:left}
+.nm{font-family:var(--disp);font-weight:800;font-size:22px;text-transform:uppercase;min-width:104px}
+.pct{font-weight:700;font-size:15px;min-width:46px}
+.meta{font-size:13px;color:var(--mute);flex:1}
+.flag{font-size:12px;font-weight:700;border:2px solid var(--bad);color:var(--bad);border-radius:8px;padding:1px 6px;white-space:nowrap}
+.str{display:grid;grid-template-columns:repeat(14,1fr);gap:3px;padding:0 12px 12px}
+.c{aspect-ratio:1;border-radius:5px;font-size:10px;display:flex;align-items:center;justify-content:center;color:#fff;background:var(--none);font-weight:700}
+.c.f{background:var(--accent)}.c.p{background:var(--gold);color:#14201A}.c.m{background:var(--bad)}.c.u{background:var(--none);color:var(--mute);opacity:.55}
+.c.t{outline:2px solid var(--ink)}
+.dt{padding:2px 12px 12px;font-size:14px;display:none}
+.pl.open .dt{display:block}
+.dt table{width:100%;border-collapse:collapse}.dt td{padding:4px 6px;border-top:1px solid var(--line);vertical-align:top}
+.msg{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:8px}
+.msg b{font-family:var(--disp);font-size:18px;text-transform:uppercase}.msg small{color:var(--mute)}
+.lg{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--mute);margin-top:10px}.lg i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px}
+.err{margin-top:12px;background:#F6E9E7;color:#7A1F1F;border-radius:10px;padding:10px 12px;font-size:14px}
+</style>
+<div class="w">
+<h1>Coach Board</h1><div class="sub" id="sub">CCRI pitchers</div>
+<div id="gate" hidden><p>Enter your coach passcode.</p><div class="bar"><input type="password" id="pc" autocomplete="off" aria-label="Passcode"><button class="btn" id="go" type="button">Open</button></div></div>
+<div id="app" hidden>
+<div class="bar"><button class="btn o" id="rf" type="button">Refresh</button><span class="sub" id="up"></span></div>
+<div class="lg"><span><i style="background:var(--accent)"></i>100%</span><span><i style="background:var(--gold)"></i>started</span><span><i style="background:var(--bad)"></i>missed</span><span><i style="background:var(--none)"></i>not yet</span><span>Outlined = today</span></div>
+<div id="pls"></div>
+<h2>Messages from players</h2><div id="msgs"></div>
+</div><div id="er"></div></div>
+<script>
+const TRK='https://script.google.com/macros/s/AKfycbxXeLEhwPotT8eOVEqR0f1wn8rnzLXBZMJn1a8shfHNbgLCB66rgWr8D0Oinykyn_YT/exec',PLAYERS=["Prebot", "Lopez", "Cook", "Araujo", "Munger", "DeLuca", "Vermette", "Robitialle", "Gallagher", "Jones", "Vinas", "Rosario"],SDAY=new Date(2026,10,2);
+const $=id=>document.getElementById(id);
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function todayIdx(){const n=new Date();return Math.round((new Date(n.getFullYear(),n.getMonth(),n.getDate())-SDAY)/864e5)}
+function dlab(i){const d=new Date(SDAY.getTime()+i*864e5);return d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}
+let CODE=ls('coach-code')||'';
+function load(){$('er').innerHTML='';
+ fetch(TRK+'?t='+encodeURIComponent(CODE)).then(r=>r.text()).then(t=>{
+  if(t==='no'){ls('coach-code','');CODE='';$('app').hidden=true;$('gate').hidden=false;$('er').innerHTML='<div class="err">That passcode did not work.</div>';return}
+  let j;try{j=JSON.parse(t)}catch(e){throw new Error('bad reply')}
+  $('gate').hidden=true;$('app').hidden=false;render(j);$('up').textContent='Updated '+new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})
+ }).catch(()=>{$('er').innerHTML='<div class="err">Could not load. Check your connection and tap Refresh.</div>';if(CODE){$('app').hidden=false}})}
+function render(j){const ti=todayIdx(),map={};
+ j.prog.forEach(r=>{(map[r.p]=map[r.p]||{})[r.d]=r});
+ const names=PLAYERS.slice();Object.keys(map).forEach(n=>{if(!names.includes(n))names.push(n)});
+ const rows=names.map(n=>{const m=map[n]||{};let sum=0,cnt=0,last=null,act=0;
+  for(let i=0;i<=Math.min(27,ti);i++){cnt++;const r=m[i];const p=r&&r.b?Math.round(100*r.a/r.b):0;sum+=p;if(r&&r.a>0){act++;const u=new Date(r.u);if(!last||u>last)last=u}}
+  const avg=cnt?Math.round(sum/cnt):0;
+  const quiet=ti>=2&&(!last||(Date.now()-last)>2*864e5+864e5/2);
+  return {n,m,avg,last,act,cnt,quiet}});
+ rows.sort((a,b)=>(b.quiet-a.quiet)||(a.avg-b.avg));
+ $('sub').textContent=ti<0?'Training starts Nov 2':(ti>27?'Block finished':'Day '+(ti+1)+' of 28')+' · % = share of check-offs done so far';
+ $('pls').innerHTML=rows.map(R=>{let cells='';
+  for(let i=0;i<28;i++){const r=R.m[i],p=r&&r.b?Math.round(100*r.a/r.b):0;let c='u';if(i<=ti){c=p>=100?'f':p>0?'p':(i<ti?'m':'u')}
+   cells+='<div class="c '+c+(i===ti?' t':'')+'" title="'+dlab(i)+': '+(i<=ti||p?p+'%':'')+'">'+(i+1)+'</div>'}
+  let det='<table>';for(let i=Math.min(27,ti);i>=0;i--){const r=R.m[i];if(!r)continue;let s=[];try{s=JSON.parse(r.s)}catch(e){}
+   det+='<tr><td><b>'+dlab(i)+'</b></td><td>'+(r.b?Math.round(100*r.a/r.b):0)+'%</td><td>'+s.map(x=>esc(x[0])+(x[2]>1?' '+x[1]+'/'+x[2]:(x[1]?' ✓':' ✗'))).join(' · ')+'</td></tr>'}
+  det+='</table>';if(det==='<table></table>')det='<div class="sub">Nothing logged yet.</div>';
+  const last=R.last?R.last.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}):'never';
+  return '<div class="pl"><button class="ph" type="button"><span class="nm">'+esc(R.n)+'</span><span class="pct">'+R.avg+'%</span><span class="meta">'+R.act+'/'+Math.max(R.cnt,0)+' days · last '+last+'</span>'+(R.quiet?'<span class="flag">Quiet</span>':'')+'</button><div class="str">'+cells+'</div><div class="dt">'+det+'</div></div>'}).join('');
+ document.querySelectorAll('.ph').forEach(b=>b.onclick=()=>b.parentNode.classList.toggle('open'));
+ const ms=j.msgs.slice().sort((a,b)=>new Date(b.u)-new Date(a.u));
+ $('msgs').innerHTML=ms.length?ms.map(m=>'<div class="msg"><b>'+esc(m.p)+'</b> <small>'+dlab(m.d)+'</small><div>'+esc(m.m)+'</div></div>').join(''):'<div class="sub">No messages yet.</div>'}
+$('go').onclick=()=>{CODE=$('pc').value.trim();if(!CODE)return;ls('coach-code',CODE);load()};
+$('pc').addEventListener('keydown',e=>{if(e.key==='Enter')$('go').click()});
+$('rf').onclick=load;
+if(CODE)load();else $('gate').hidden=false;
+</script>
+</html>

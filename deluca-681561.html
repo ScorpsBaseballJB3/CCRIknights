@@ -233,7 +233,7 @@ function groupExercises(d,S){let h='',i=0;const ex=d.ex;
   else{h+=exCard(e,i,st.i,S);i++}}
  return h}
 function prog(d,S){let tot=0,dn=0;d.steps.forEach((s,n)=>{if(s.ref==='main')return;tot++;if(S.st&&S.st[n])dn++});d.ex.forEach((e,n)=>{tot++;if(S.ex&&S.ex[n])dn++});return [dn,tot]}
-function updProg(){const d=D[st.i],S=dstate(st.i),[a,b]=prog(d,S);const p=document.getElementById('pbar');if(!p)return;p.querySelector('i').style.width=(b?100*a/b:0)+'%';p.querySelector('span').textContent=a+' of '+b+' done'}
+function updProg(){const d=D[st.i],S=dstate(st.i),[a,b]=prog(d,S);const p=document.getElementById('pbar');if(!p)return;p.querySelector('i').style.width=(b?100*a/b:0)+'%';p.querySelector('span').textContent=(b?Math.round(100*a/b):0)+'% done'}
 function renderDay(){const d=D[st.i],ki=kinfo(d),off=d.kind==='OFF DAY',ti=todayIdx(),S=dstate(st.i);const root=document.getElementById('day');let h='';
  if(ti<0&&st.i===0)h+='<div class="note">Training starts Monday, Nov 2. Look around now and get comfortable with the layout.</div>';
  if(ti>27&&st.i===27)h+='<div class="note">That finishes the November block. Nice work.</div>';

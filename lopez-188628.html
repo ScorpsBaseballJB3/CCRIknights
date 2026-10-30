@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>html,body{margin:0}*,*::before,*::after{box-sizing:border-box}body{-webkit-text-size-adjust:100%}</style><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="icon-192.png"><link rel="manifest" href="manifest.json"><meta name="apple-mobile-web-app-title" content="CCRI"><meta name="robots" content="noindex,nofollow"><title>Lopez November Training</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>html,body{margin:0}*,*::before,*::after{box-sizing:border-box}body{-webkit-text-size-adjust:100%}</style><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="icon-192.png"><link rel="manifest" href="manifest.json"><meta name="apple-mobile-web-app-title" content="CCRI"><meta name="robots" content="noindex,nofollow"><title>Lopez Training</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
 <style>
@@ -236,7 +236,7 @@ function prog(d,S){let tot=0,dn=0;d.steps.forEach((s,n)=>{if(s.ref==='main')retu
 function updProg(){const d=D[st.i],S=dstate(st.i),[a,b]=prog(d,S);const p=document.getElementById('pbar');if(!p)return;p.querySelector('i').style.width=(b?100*a/b:0)+'%';p.querySelector('span').textContent=(b?Math.round(100*a/b):0)+'% done'}
 function renderDay(){const d=D[st.i],ki=kinfo(d),off=d.kind==='OFF DAY',ti=todayIdx(),S=dstate(st.i);const root=document.getElementById('day');let h='';
  if(ti<0&&st.i===0)h+='<div class="note">Training starts Monday, Nov 2. Look around now and get comfortable with the layout.</div>';
- if(ti>27&&st.i===27)h+='<div class="note">That finishes the November block. Nice work.</div>';
+ if(ti>27&&st.i===27)h+='<div class="note">That finishes this block. Nice work.</div>';
  h+='<div class="prog" id="pbar"><div class="bar"><i></i></div><span></span></div>';
  h+='<div class="hero" data-off="'+(off?1:0)+'" id="hero"><div><div class="dn">'+d.name+'</div></div><div><div class="dt">'+d.mon+' '+d.day+'</div><div class="ty">'+ki[0]+'</div></div></div>';
  h+='<div class="quote" id="q"><p>“'+esc(sc(d.quote).replace(/\bi\b/g,'I').replace(/\bi\'/g,"I'"))+'”</p>'+(d.author?'<cite>— '+esc(tc(d.author))+'</cite>':'')+'</div>';

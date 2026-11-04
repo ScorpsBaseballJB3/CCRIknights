@@ -61,10 +61,10 @@ details.ph2 summary{cursor:pointer;font-weight:700;margin:6px 0}
 <h2>Everyone today</h2><p class="hint">Tap a name for the full 28-day history.</p>
 <div id="nudge"></div><div id="pls"></div>
 <div class="lg"><span><i style="background:var(--accent)"></i>100%</span><span><i style="background:var(--gold)"></i>started</span><span><i style="background:var(--bad)"></i>missed</span><span><i style="background:var(--none)"></i>not yet</span><span>Outlined = today</span></div>
-<h2>Weights: raise or lower?</h2><p class="hint">From the "how did the weights feel" answers after each lift. E = easy, S = solid, H = hard. Last 3 lifts, newest first.</p>
-<div id="wts"></div>
-<h2>Trends</h2><p class="hint">Last 7 check-ins, oldest to newest. Red bars are low sleep, low rested, or a very hard workout.</p>
-<div id="trn"></div>
+<div id="wsec" hidden><h2>Weights: raise or lower?</h2><p class="hint">From the "how did the weights feel" answers after each lift. E = easy, S = solid, H = hard. Last 3 lifts, newest first.</p>
+<div id="wts"></div></div>
+<div id="tsec" hidden><h2>Trends</h2><p class="hint">Last 7 check-ins, oldest to newest. Red bars are low sleep, low rested, or a very hard workout.</p>
+<div id="trn"></div></div>
 <h2>Messages from players</h2><div id="msgs"></div>
 <details class="ph2"><summary>Phone numbers (saved only on this device)</summary><p class="hint">Used for the Text buttons. Nothing is sent anywhere.</p><div id="phs"></div></details>
 </div><div id="er"></div></div>
@@ -125,8 +125,8 @@ function alerts(P,CI,PW,rows){const out=[],now=Date.now();
   if(R&&R.quiet)ambs.push('Quiet: nothing logged in 2+ days');
   if(reds.length||ambs.length)out.push({n,reds,ambs,notes,sev:reds.length?2:1,score:reds.length*10+ambs.length,back:R&&R.back})});
  out.sort((a,b)=>b.sev-a.sev||b.score-a.score);return out}
-function renderNeeds(al,P){
- if(!al.length){$('nd').innerHTML='<div class="nd ok"><h2>All clear</h2><div class="sub" style="margin-bottom:6px">Nobody flagged from the last 4 days of check-ins and workouts.</div></div>';return}
+function renderNeeds(al,P,hasF){
+ if(!al.length){$('nd').innerHTML='<div class="nd ok"><h2>All clear</h2><div class="sub" style="margin-bottom:6px">'+(hasF?'Nobody flagged from the last 4 days of check-ins and workouts.':'Nobody has gone quiet for 2 or more days.')+'</div></div>';return}
  const reds=al.filter(a=>a.sev===2).length;
  $('nd').innerHTML='<div class="nd '+(reds?'bad':'ok')+'" style="'+(reds?'':'background:var(--ambbg);border-color:var(--gold)')+'"><h2>Needs you ('+al.length+')</h2>'+al.map(a=>{
   const body='Hey '+a.n+', checking in on you. How are you feeling? - Coach Brooks';
@@ -142,7 +142,7 @@ function render(j){LAST=j;const ti=todayIdx(),map={},now=new Date();
   const tr=m[pt],tp=tr&&tr.b?Math.round(100*tr.a/tr.b):0;
   const ci=last((CI[n]||[]).filter(r=>sameDay(new Date(r.t),now))),pw=last((PW[n]||[]).filter(r=>sameDay(new Date(r.t),now)));
   return {n,m,o,pt,avg,lastT,act,cnt,quiet,back,tp,ci,pw}});
- const al=alerts(PLAYERS,CI,PW,rows);renderNeeds(al,PLAYERS);
+ const al=alerts(PLAYERS,CI,PW,rows);renderNeeds(al,PLAYERS,hasF);
  /* today */
  const lateStart=now.getHours()>=12;
  const behind=rows.filter(R=>R.pt>=0&&R.pt<=27&&R.tp===0);
@@ -161,8 +161,8 @@ function render(j){LAST=j;const ti=todayIdx(),map={},now=new Date();
   return '<div class="pl"><button class="ph" type="button"><span class="nm2">'+esc(R.n)+'</span>'+st+(hasF?ck:'')+(R.quiet?'<span class="chip q">Quiet</span>':(R.back?'<span class="chip wb">Welcome back</span>':''))+'<span class="meta">'+R.avg+'% avg · '+R.act+'/'+Math.max(R.pt+1,0)+' days</span></button><div class="str">'+cells+'</div><div class="dt">'+det+'</div></div>'}).join('');
  document.querySelectorAll('.ph').forEach(b=>b.onclick=()=>b.parentNode.classList.toggle('open'));
  /* weights */
- if(!hasF){const nf='<div class="note">The check-in and post-workout forms are not connected to this board yet, so Needs you, Weights and Trends are empty. Finish the one-time setup and they fill in.</div>';$('wts').innerHTML=nf;$('trn').innerHTML=nf}
- else{
+ $('wsec').hidden=!hasF;$('tsec').hidden=!hasF;
+ if(hasF){
  const wrows=PLAYERS.map(n=>{const L=(PW[n]||[]).filter(r=>r.wt&&r.wt!=='None').slice(-3).reverse();const k=L.map(r=>r.wt[0]);
   let adv='<span class="sub">Not enough yet</span>';
   if(L.length>=3&&k.every(x=>x==='E'))adv='<span class="adv up">Raise loads</span>';

@@ -70,8 +70,8 @@ details.ph2 summary{cursor:pointer;font-weight:700;margin:6px 0}
 </div><div id="er"></div></div>
 <script>
 const TRK='https://script.google.com/macros/s/AKfycbxXeLEhwPotT8eOVEqR0f1wn8rnzLXBZMJn1a8shfHNbgLCB66rgWr8D0Oinykyn_YT/exec',
-PLAYERS=["Prebot","Lopez","Cook","Araujo","Munger","Vermette","Robitialle","Gallagher","Jones","Vinas","Rosario","Reyes"],
-OFF={Araujo:1,Reyes:7},SDAY=new Date(2026,10,2),FRESH=4*864e5;
+PLAYERS=["Prebot","Lopez","Cook","Araujo","Munger","Vermette","Robitialle","Gallagher","Jones","Vinas","Rosario","Reyes","Viveros"],
+OFF={Araujo:1,Reyes:7,Viveros:28},LN={Viveros:105},SDAY=new Date(2026,10,2),FRESH=4*864e5;
 const $=id=>document.getElementById(id);
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
@@ -136,24 +136,24 @@ function render(j){LAST=j;const ti=todayIdx(),map={},now=new Date();
  j.prog.forEach(r=>{(map[r.p]=map[r.p]||{})[r.d]=r});
  const CI=byPlayer(j.ci||[]),PW=byPlayer(j.pw||[]),hasF=!!(j.ci||j.pw);
  const rows=PLAYERS.map(n=>{const m=map[n]||{},o=OFF[n]||0,pt=ti-o;let sum=0,cnt=0,lastT=null,act=0;
-  for(let i=0;i<=Math.min(27,pt);i++){cnt++;const r=m[i];const p=r&&r.b?Math.round(100*r.a/r.b):0;sum+=p;if(r&&r.a>0){act++;const u=new Date(r.u);if(!lastT||u>lastT)lastT=u}}
+  for(let i=0;i<=Math.min((LN[n]||28)-1,pt);i++){cnt++;const r=m[i];const p=r&&r.b?Math.round(100*r.a/r.b):0;sum+=p;if(r&&r.a>0){act++;const u=new Date(r.u);if(!lastT||u>lastT)lastT=u}}
   const avg=cnt?Math.round(sum/cnt):0,quiet=pt>=2&&(!lastT||(Date.now()-lastT)>2*864e5+864e5/2);
-  let back=false;for(let i=Math.max(0,pt-3);i<=Math.min(27,pt);i++){const r=m[i];if(r&&String(r.s).indexOf('Welcome back')>=0)back=true}
+  let back=false;for(let i=Math.max(0,pt-3);i<=Math.min((LN[n]||28)-1,pt);i++){const r=m[i];if(r&&String(r.s).indexOf('Welcome back')>=0)back=true}
   const tr=m[pt],tp=tr&&tr.b?Math.round(100*tr.a/tr.b):0;
   const ci=last((CI[n]||[]).filter(r=>sameDay(new Date(r.t),now))),pw=last((PW[n]||[]).filter(r=>sameDay(new Date(r.t),now)));
   return {n,m,o,pt,avg,lastT,act,cnt,quiet,back,tp,ci,pw}});
  const al=alerts(PLAYERS,CI,PW,rows);renderNeeds(al,PLAYERS,hasF);
  /* today */
  const lateStart=now.getHours()>=12;
- const behind=rows.filter(R=>R.pt>=0&&R.pt<=27&&R.tp===0);
+ const behind=rows.filter(R=>R.pt>=0&&R.pt<(LN[R.n]||28)&&R.tp===0);
  const nums=behind.map(R=>phone(R.n).replace(/[^\d+]/g,'')).filter(Boolean);
  $('nudge').innerHTML=(ti>=0&&behind.length&&lateStart)?'<div class="bar" style="margin:0 0 6px"><span class="sub">Not started yet today: '+behind.map(R=>esc(R.n)).join(', ')+'</span>'+(nums.length?'<a class="btn s" href="sms:'+nums.join(',')+'?&body='+encodeURIComponent("Hey, it's Coach. Today's work isn't checked off yet. Knock it out and tap the boxes when you're done.")+'">Text them all</a>':'<span class="sub">(add numbers at the bottom to text them)</span>')+'</div>':'';
  const ord=rows.slice().sort((a,b)=>(b.quiet-a.quiet)||((a.tp===0)-(b.tp===0))*-1||(a.avg-b.avg));
  $('sub').textContent=ti<0?'Training starts Nov 2 (Leandro Nov 3)':(ti>27?'Block finished':'Day '+(ti+1)+' of 28')+' · % = share of check-offs done so far';
  $('pls').innerHTML=ord.map(R=>{let cells='';
-  for(let i=0;i<28;i++){const r=R.m[i],p=r&&r.b?Math.round(100*r.a/r.b):0;let c='u';if(i<=R.pt){c=p>=100?'f':p>0?'p':(i<R.pt?'m':'u')}
+  const W0=Math.max(0,Math.min((LN[R.n]||28)-28,Math.floor(Math.max(R.pt,0)/28)*28));for(let i=W0;i<W0+28;i++){const r=R.m[i],p=r&&r.b?Math.round(100*r.a/r.b):0;let c='u';if(i<=R.pt){c=p>=100?'f':p>0?'p':(i<R.pt?'m':'u')}
    cells+='<div class="c '+c+(i===R.pt?' t':'')+'" title="'+dlab(i+R.o)+': '+(i<=R.pt||p?p+'%':'')+'">'+(i+1)+'</div>'}
-  let det='<table>';for(let i=Math.min(27,R.pt);i>=0;i--){const r=R.m[i];if(!r)continue;let s=[];try{s=JSON.parse(r.s)}catch(e){}
+  let det='<table>';for(let i=Math.min((LN[R.n]||28)-1,R.pt);i>=0;i--){const r=R.m[i];if(!r)continue;let s=[];try{s=JSON.parse(r.s)}catch(e){}
    det+='<tr><td><b>'+dlab(i+R.o)+'</b></td><td>'+(r.b?Math.round(100*r.a/r.b):0)+'%</td><td>'+s.map(x=>esc(x[0])+(x[2]>1?' '+x[1]+'/'+x[2]:(x[1]?' ✓':' ✗'))).join(' · ')+'</td></tr>'}
   det+='</table>';if(det==='<table></table>')det='<div class="sub">Nothing logged yet.</div>';
   const st=R.pt<0?'<span class="chip n">Starts '+dlab(R.o)+'</span>':R.tp>=100?'<span class="chip d">Done today</span>':R.tp>0?'<span class="chip p">'+R.tp+'% today</span>':'<span class="chip n">Not yet</span>';

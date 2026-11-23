@@ -291,7 +291,7 @@ function setK(el,d){const k=kinfo(d)[2];el.style.setProperty('--k','var(--'+k+')
 function todayIdx(){const n=new Date();const t=new Date(n.getFullYear(),n.getMonth(),n.getDate());return Math.round((t-SDAY)/864e5)}
 document.getElementById('pname').textContent=DATA.player;document.getElementById('pgoal').textContent='Your goal: '+sc(DATA.goal)+'.';
 /* ---------- progress tracking ---------- */
-const TRK='https://script.google.com/macros/s/AKfycbxXeLEhwPotT8eOVEqR0f1wn8rnzLXBZMJn1a8shfHNbgLCB66rgWr8D0Oinykyn_YT/exec',TT='ccri-7f3k9q2x',PL=DATA.player.split(' ').pop();
+const TRK='',TT='josh-v-5r2k8q',PL=DATA.player.split(' ').pop();
 const QK=PK+'-q';let Q=[],qSend=false,trT=null;try{Q=JSON.parse(lsGet(QK)||'[]')}catch(e){Q=[]}
 function qsave(){lsSet(QK,JSON.stringify(Q))}
 function flush(){if(qSend||!Q.length||!TRK)return;qSend=true;const it=Q[0];

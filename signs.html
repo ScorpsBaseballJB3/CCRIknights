@@ -64,8 +64,9 @@ h+='<div style="margin-top:10px"><a href="#" class="sub swt">Not you? Switch nam
 document.querySelectorAll(".swt").forEach(function(a){a.onclick=function(ev){ev.preventDefault();try{localStorage.removeItem("me")}catch(x){}el.style.display="none";document.getElementById("pickc").style.display="block";document.getElementById("me").value="";window.scrollTo(0,0)}});
 var u=FORM+"?player="+encodeURIComponent(n);document.getElementById("rep").href=u;document.getElementById("fab").href=u;
 }
-var me=document.getElementById("me");me.onchange=function(){try{localStorage.setItem("me",me.value)}catch(x){}render(me.value)};
-try{var s=localStorage.getItem("me");if(s&&ALL[s]){me.value=s;render(s)}}catch(x){}
+var COACH=/[?&]coach=1/.test(location.search);var me=document.getElementById("me");
+me.onchange=function(){if(!COACH){try{localStorage.setItem("me",me.value)}catch(x){}}render(me.value);if(COACH)document.getElementById("pickc").style.display="block"};
+if(COACH){document.querySelector("#pickc b").textContent="Coach view: pick any player"}else{try{var s=localStorage.getItem("me");if(s&&ALL[s]){me.value=s;render(s)}}catch(x){}}
 var tq=document.getElementById("tq"),tr=document.getElementById("tr");tq.oninput=function(){var v=tq.value.trim().toLowerCase();if(v.length<3){tr.innerHTML="";return}
 var m=TK.filter(function(x){return x[0].toLowerCase().indexOf(v)>=0});tr.innerHTML=m.length?m.slice(0,6).map(function(x){return "<div>"+(x[1]=="taken"?"❌ <b>"+esc(x[0])+"</b>: taken":x[1]=="lead"?"⏳ <b>"+esc(x[0])+"</b>: "+esc(x[2])+" is working on it":"🚫 <b>"+esc(x[0])+"</b>: said no")+"</div>"}).join(""):"<div>✅ Not taken. Go for it!</div>"};
 document.getElementById("pick").onclick=function(ev){ev.preventDefault();var L=[].slice.call(document.querySelectorAll(".loop")).filter(function(l){return +l.dataset.open>=3});if(!L.length)return;

@@ -60,7 +60,7 @@ input.search{width:100%;padding:12px 14px;border:2px solid #d7dfda;border-radius
 .fab a span{color:var(--gold2)}
 .note{font-size:13px;color:var(--mut)}
 details summary{cursor:pointer;font-weight:700;color:var(--g);padding:6px 0}
-.tkbox{background:#f4f6f5;border-radius:12px;padding:10px 12px;margin-bottom:12px}.tkbox b{color:#1F5135}.tkbox input{width:100%;font-size:17px;padding:10px;border:2px solid #1F5135;border-radius:10px;margin-top:6px;box-sizing:border-box}#tr div{padding:6px 2px;font-size:15px;border-bottom:1px solid #e2e8e4}.cd{margin-top:6px;font-weight:800;font-size:14px;color:#ffd76a}
+.tkwrap{padding:0!important;background:none!important;box-shadow:none!important}.tkbox{background:#fff;border-radius:16px;padding:14px 16px;margin:10px 0;box-shadow:0 1px 3px rgba(0,0,0,.06)}.tkbox b{color:#1F5135}.tkbox input{width:100%;font-size:17px;padding:10px;border:2px solid #1F5135;border-radius:10px;margin-top:6px;box-sizing:border-box}#tr div{padding:6px 2px;font-size:15px;border-bottom:1px solid #e2e8e4}.cd{margin-top:6px;font-weight:800;font-size:14px;color:#ffd76a}
 details.sec{background:#fff;border-radius:16px;margin:10px 0;box-shadow:0 1px 3px rgba(0,0,0,.06);scroll-margin-top:12px}
 details.sec>summary{list-style:none;padding:16px;font-weight:800;font-size:18px;color:#1F5135;display:flex;justify-content:space-between;cursor:pointer}
 details.sec>summary::-webkit-details-marker{display:none}details.sec>summary:after{content:"＋";color:#C9A227;font-weight:900}
@@ -72,7 +72,6 @@ details.sec[open]>summary:after{content:"−"}details.sec .in{padding:0 16px 16p
 <div class=stat><b>Dec 19</b><span>3 signs</span></div><div class=stat><b>Jan 14</b><span>all 5 signs</span></div></div>
 <div class=meter><div class=mtop><b>TEAM GOAL</b><span>$8,450 of $32,000 · 26%</span></div><div class=bar><i style="width:26%"></i></div><div class=cd id=cd></div></div></div></header>
 <div class=wrap><section id=how style="border:3px solid #C9A227">
-<div class=tkbox><b>Is it taken?</b><input id=tq placeholder="Type a business name…" autocomplete=off><div id=tr></div></div>
 <a class=report href="#say" style="background:#C9A227;color:#111">🗣️ What to Say</a>
 <a class=report href="sponsor-flyer.pdf" style="background:#fff;color:#1F5135;border:3px solid #1F5135">📄 Sponsor Flyer + Sign-Up Form</a>
 <a class=report href="https://tally.so/r/1Wdp0b" style="margin-bottom:14px">📝 Report a Sign</a>
@@ -83,7 +82,8 @@ details.sec[open]>summary:after{content:"−"}details.sec .in{padding:0 16px 16p
 <div class=step><div class=num>4</div><div><b>Get the form + payment:</b> cash, check to CCRI Athletics, or Venmo @Jbrooks4392. They can also mail it to the school (address on the form).</div></div>
 <div class=step><div class=num>5</div><div><b>Give the form + payment to Coach Brooks</b> (or they mail it to the school). Then tap Report a Sign so you get credit.</div></div></div>
 <a class=report id=pick href="#loops" style="background:#1F5135;color:#fff">🎲 Pick a loop for me</a>
-</section><details class=sec id=say><summary>🗣️ What to say + best times</summary><div class=in>
+</section>
+<section class=tkwrap><div class=tkbox><b>🔎 Is it taken?</b> <span style="font-size:13px;color:#5d6b64">Check before you walk in.</span><input id=tq placeholder="Type a business name…" autocomplete=off><div id=tr></div></div></section><details class=sec id=say><summary>🗣️ What to say + best times</summary><div class=in>
 <div class=dark><div class=k>WAYS TO START THE CONVERSATION · NO SCRIPT NEEDED</div>
 <p><b>Know the place:</b> “Hey, I come here all the time. Is the owner or manager around?”</p>
 <p><b>Local angle:</b> “I play baseball at CCRI right up the road. Could I grab the manager for a minute?”</p>

@@ -53,15 +53,15 @@ var togo=Math.max(0,1000-c.in),pct=Math.min(100,c.in/10);
 var nx=CP.filter(function(k){return days(k.d)>=0})[0],cp="";
 if(nx){var d=days(nx.d),clear=c.in>=nx.m||(nx.r&&c.ok>=nx.r);
 var cls=clear?'ok':(d<=3?'bad':'mid');cp='<div class="cp '+cls+'">'+(clear?'✅ On track':(d<=3?'⚠️ Behind':'🎯 Not there yet'))+' · Next checkpoint '+new Date(nx.d+"T00:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"})+' ('+d+' day'+(d==1?'':'s')+')<br><span style="font-weight:400">Need $'+nx.m+(nx.r?' or '+nx.r+' approved reports':'')+'. You have $'+c.in+(nx.r?' and '+c.ok+' reports':'')+'.</span></div>'}
-var h='<div class=hi>'+esc(c.full)+'</div><div class=money>$'+c.in+' in</div><div class=sub>'+(c.pend?'+$'+c.pend+' pending · ':'')+'$'+togo+' to go</div><div class=bar><i style="width:'+Math.max(pct,2)+'%"></i></div>'+cp;
+var h='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><div class=hi style="margin:0">'+esc(c.full)+'</div><a href="#" class=swt style="font-size:13px;font-weight:700;border:2px solid #1F5135;border-radius:16px;padding:4px 10px;text-decoration:none;white-space:nowrap">Switch</a></div><div class=money>$'+c.in+' in</div><div class=sub>'+(c.pend?'+$'+c.pend+' pending · ':'')+'$'+togo+' to go</div><div class=bar><i style="width:'+Math.max(pct,2)+'%"></i></div>'+cp;
 h+='<div class=grid><div class=box><b>'+c.ok+'</b>reports approved</div><div class=box><b>'+c.wait+'</b>waiting on Coach</div></div>';
 if(c.ok+c.wait==0)h+='<div class="cp bad" style="font-weight:400">You have <b>0 reports</b>. Report every place you\'ve already been, even the no\'s.</div>';
 if(c.signs.length){h+='<h3>Your signs</h3><ul class=l>'+c.signs.map(function(s){return '<li>'+esc(s[0])+'<span class="pill p-'+s[1]+'">'+(s[1]=="in"?"$ in":s[1]=="school"?"to school":"$ due")+'</span></li>'}).join("")+'</ul>'}
 if(c.waiting.length){h+='<h3>Waiting on</h3><ul class=l>'+c.waiting.map(function(w){var b=encodeURIComponent("Hi, it's "+c.first+" from CCRI Baseball. Just checking in on the field sign. Thank you so much for supporting us!");return '<li>'+esc(w)+' · <a href="sms:?&body='+b+'">Text a reminder</a></li>'}).join("")+'</ul>'}
 if(c.renew.length){h+='<h3>Your renewal leads ⭐</h3><div class=sub>On our fence last year. Easiest yes there is.</div><ul class=l>'+c.renew.map(function(r){return '<li><b>'+esc(r[0])+'</b>'+(r[1]&&/^\d/.test(r[1])&&r[1].indexOf("-")>0?' · <a href="tel:'+r[1].replace(/-/g,"")+'">'+r[1]+'</a>':'')+'</li>'}).join("")+'</ul>'}
 if(c.leads.length){h+='<h3>Your leads</h3><ul class=l>'+c.leads.map(function(l){return '<li>'+esc(l)+'</li>'}).join("")+'</ul>'}
-h+='<div style="margin-top:10px"><a href="#" id=sw class=sub>Not you? Switch name</a></div>';el.innerHTML=h;el.style.display="block";document.getElementById("pickc").style.display="none";
-document.getElementById("sw").onclick=function(ev){ev.preventDefault();try{localStorage.removeItem("me")}catch(x){}el.style.display="none";document.getElementById("pickc").style.display="block"};
+h+='<div style="margin-top:10px"><a href="#" class="sub swt">Not you? Switch name</a></div>';el.innerHTML=h;el.style.display="block";document.getElementById("pickc").style.display="none";
+document.querySelectorAll(".swt").forEach(function(a){a.onclick=function(ev){ev.preventDefault();try{localStorage.removeItem("me")}catch(x){}el.style.display="none";document.getElementById("pickc").style.display="block";document.getElementById("me").value="";window.scrollTo(0,0)}});
 var u=FORM+"?player="+encodeURIComponent(n);document.getElementById("rep").href=u;document.getElementById("fab").href=u;
 }
 var me=document.getElementById("me");me.onchange=function(){try{localStorage.setItem("me",me.value)}catch(x){}render(me.value)};

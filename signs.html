@@ -65,8 +65,10 @@ document.querySelectorAll(".swt").forEach(function(a){a.onclick=function(ev){ev.
 var u=FORM+"?player="+encodeURIComponent(n);document.getElementById("rep").href=u;document.getElementById("fab").href=u;
 }
 var COACH=/[?&]coach=1/.test(location.search);var me=document.getElementById("me");
-me.onchange=function(){if(!COACH){try{localStorage.setItem("me",me.value)}catch(x){}}render(me.value);if(COACH)document.getElementById("pickc").style.display="block"};
-if(COACH){document.querySelector("#pickc b").textContent="Coach view: pick any player"}else{try{var s=localStorage.getItem("me");if(s&&ALL[s]){me.value=s;render(s)}}catch(x){}}
+function logOpen(n){if(COACH||!n)return;var d=Math.floor((Date.now()-Date.UTC(2026,10,2,5))/864e5),k="op_"+d;try{if(localStorage.getItem(k)==n)return;localStorage.setItem(k,n)}catch(x){}
+try{fetch("https://script.google.com/macros/s/AKfycbxXeLEhwPotT8eOVEqR0f1wn8rnzLXBZMJn1a8shfHNbgLCB66rgWr8D0Oinykyn_YT/exec",{method:"POST",mode:"no-cors",body:JSON.stringify({t:"ccri-7f3k9q2x",k:"p",p:"SIGNS·"+n,d:d,a:1,b:1,s:[]})}).catch(function(){})}catch(x){}}
+me.onchange=function(){if(!COACH){try{localStorage.setItem("me",me.value)}catch(x){}logOpen(me.value)}render(me.value);if(COACH)document.getElementById("pickc").style.display="block"};
+if(COACH){document.querySelector("#pickc b").textContent="Coach view: pick any player"}else{try{var s=localStorage.getItem("me");if(s&&ALL[s]){me.value=s;render(s);logOpen(s)}}catch(x){}}
 var tq=document.getElementById("tq"),tr=document.getElementById("tr");tq.oninput=function(){var v=tq.value.trim().toLowerCase();if(v.length<3){tr.innerHTML="";return}
 var m=TK.filter(function(x){return x[0].toLowerCase().indexOf(v)>=0});tr.innerHTML=m.length?m.slice(0,6).map(function(x){return "<div>"+(x[1]=="taken"?"❌ <b>"+esc(x[0])+"</b>: taken":x[1]=="lead"?"⏳ <b>"+esc(x[0])+"</b>: "+esc(x[2])+" is working on it":"🚫 <b>"+esc(x[0])+"</b>: said no")+"</div>"}).join(""):"<div>✅ Not taken. Go for it!</div>"};
 document.getElementById("pick").onclick=function(ev){ev.preventDefault();var L=[].slice.call(document.querySelectorAll(".loop")).filter(function(l){return +l.dataset.open>=3});if(!L.length)return;
